@@ -1,0 +1,8 @@
+<group name="sentinelsoc,authentication,">
+  <rule id="100100" level="8">
+    <if_sid>5710</if_sid>
+    <match>labtest_</match>
+    <description>SentinelSOC: Invalid SSH login targeting a lab test account</description>
+    <group>authentication_failed,lab_detection,</group>
+  </rule>
+</group>

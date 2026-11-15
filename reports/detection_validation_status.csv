@@ -1,0 +1,4 @@
+﻿"Scenario","EvidenceType","EventID","CustomRule","ValidationStatus","Notes"
+"Failed authentication","Live Windows EventChannel","4625","100101","Verified","Custom child rule detected a real failed login"
+"Suspicious PowerShell","Sysmon Event ID 1 and Wazuh synthetic replay","1","100102","Rule-engine verified; live alert not observed","Real encoded PowerShell execution captured by Sysmon. Wazuh logtest matched rule 100102. Live alerts count was zero while VMs ran sequentially."
+"Administrators group addition","Windows Security EVTX and synthetic rule test","4732","100103","Offline validation; live alert not verified","Existing real Event ID 4732 records concern Users and IIS_IUSRS, not Administrators. Live custom alert has not been confirmed."

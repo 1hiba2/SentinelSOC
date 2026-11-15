@@ -1,0 +1,3 @@
+﻿Scenario,Configuration,RuleID,Level,EventID,Outcome
+Failed authentication,Built-in baseline,60122,5,4625,Detected live
+Failed authentication,SentinelSOC custom,100101,9,4625,Detected live

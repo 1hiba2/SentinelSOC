@@ -1,0 +1,32 @@
+﻿# Virtual machines and disk images
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.ova
+*.ovf
+*.iso
+*.sav
+*.vbox
+*.vbox-prev
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519
+client.keys
+authd.pass
+
+# Local VM and backup directories
+02-virtualmachines/
+backups/

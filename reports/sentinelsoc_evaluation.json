@@ -1,0 +1,28 @@
+{
+  "project": "SentinelSOC",
+  "real_evidence_inventory": {
+    "sysmon_process_creation_events": 415,
+    "powershell_process_events": 19,
+    "security_replay_events": 4,
+    "failed_login_events": 1,
+    "group_membership_events": 3,
+    "administrators_group_additions": 0
+  },
+  "synthetic_pattern_evaluation": {
+    "cases": 6,
+    "true_positives": 3,
+    "true_negatives": 3,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "accuracy": 1.0
+  },
+  "limitations": [
+    "Synthetic pattern metrics are not real-world accuracy.",
+    "Real-event inventory does not measure detection accuracy.",
+    "Wazuh rule-engine observations are documented separately.",
+    "Live Windows agent ingestion is not yet verified."
+  ]
+}

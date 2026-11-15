@@ -1,0 +1,4 @@
+Scenario,BaselineRule,BaselineLevel,CustomRule,CustomLevel
+Failed authentication (4625),1002,2,100101,7
+Encoded PowerShell,No Phase 3 alert,,100102,8
+Administrators group addition,No Phase 3 alert,,100103,10

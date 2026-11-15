@@ -1,0 +1,9 @@
+<group name="sentinelsoc,privileged_group_changes,">
+  <rule id="100103" level="10">
+    <decoded_as>json</decoded_as>
+    <field name="win.system.eventID">^4732$</field>
+    <field name="win.eventdata.targetSid">^S-1-5-32-544$</field>
+    <description>SentinelSOC: Member added to local Administrators group</description>
+    <group>account_change,privilege_escalation,</group>
+  </rule>
+</group>

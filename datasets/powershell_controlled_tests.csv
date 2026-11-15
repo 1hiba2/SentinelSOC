@@ -1,0 +1,7 @@
+﻿"TestID","CommandLine","GroundTruth","Description"
+"PS-001","powershell.exe -NoProfile -Command ""Get-Date""","0","Benign date query"
+"PS-002","powershell.exe -ExecutionPolicy Restricted -Command ""Get-Service""","0","Restricted-policy administrative query"
+"PS-003","powershell.exe -EncodedCommand SQBFAFgA","1","Encoded command indicator"
+"PS-004","powershell.exe -ExecutionPolicy Bypass -Command ""Write-Output test""","1","Execution-policy bypass indicator"
+"PS-005","powershell.exe -Command ""Invoke-Expression $cmd""","1","Dynamic expression execution indicator"
+"PS-006","powershell.exe -Command ""Get-Process""","0","Benign process listing"

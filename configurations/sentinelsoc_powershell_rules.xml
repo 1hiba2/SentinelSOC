@@ -1,0 +1,14 @@
+<group name="sentinelsoc,powershell_detection,">
+  <rule id="100102" level="8">
+    <decoded_as>json</decoded_as>
+    <field name="win.system.eventID">^1$</field>
+    <field name="win.system.channel" type="pcre2">(?i)^Microsoft-Windows-Sysmon/Operational$</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\powershell\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\s-(?:EncodedCommand|enc)\s+\S+</field>
+    <description>SentinelSOC: PowerShell encoded-command execution detected</description>
+    <group>powershell,suspicious_execution,custom_detection,</group>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+  </rule>
+</group>

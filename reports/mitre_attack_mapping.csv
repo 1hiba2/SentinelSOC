@@ -1,0 +1,4 @@
+﻿Scenario,TechniqueID,TechniqueName,EvidenceStatus
+Failed authentication,T1110,Brute Force,Controlled failed authentication event; technique mapping is contextual
+Suspicious PowerShell,T1059.001,PowerShell,Native Sysmon event and successful synthetic Wazuh rule-engine test
+Administrators group addition,T1098.007,Additional Local or Domain Groups,Scenario defined; qualifying live event not verified
