@@ -3,7 +3,7 @@
 
 Subject:
 	Security ID:		S-1-5-18
-	Account Name:		SRV-FSBM01$
+	Account Name:		LAB-WINDOWS-SERVER$
 	Account Domain:		WORKGROUP
 	Logon ID:		0x3E7
 
@@ -12,7 +12,7 @@ Logon Type:			2
 Account For Which Logon Failed:
 	Security ID:		S-1-0-0
 	Account Name:		Administrator
-	Account Domain:		SRV-FSBM01
+	Account Domain:		LAB-WINDOWS-SERVER
 
 Failure Information:
 	Failure Reason:		Unknown user name or bad password.
@@ -24,7 +24,7 @@ Process Information:
 	Caller Process Name:	C:\Windows\System32\svchost.exe
 
 Network Information:
-	Workstation Name:	SRV-FSBM01
+	Workstation Name:	LAB-WINDOWS-SERVER
 	Source Network Address:	127.0.0.1
 	Source Port:		0
 
