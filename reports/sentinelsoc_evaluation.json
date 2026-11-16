@@ -23,6 +23,6 @@
     "Synthetic pattern metrics are not real-world accuracy.",
     "Real-event inventory does not measure detection accuracy.",
     "Wazuh rule-engine observations are documented separately.",
-    "Live Windows agent ingestion is not yet verified."
+    "Live failed-authentication ingestion was verified separately; live PowerShell and Administrators-group custom alerts remain unverified."
   ]
 }

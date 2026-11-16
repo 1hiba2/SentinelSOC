@@ -1,88 +1,105 @@
-﻿# SentinelSOC
+# SentinelSOC
 
-Security detection engineering and research project using
-Wazuh, Sysmon, Windows Server 2019, and Python.
+**Windows detection engineering and evidence-based security research using Wazuh, Sysmon and Python**
 
-## Overview
+![Research prototype](https://img.shields.io/badge/status-research%20prototype-blue) ![Verified live](https://img.shields.io/badge/live%20validation-failed%20authentication-green) ![Python](https://img.shields.io/badge/analysis-Python-3776AB)
 
-SentinelSOC investigates three Windows detection scenarios:
+SentinelSOC is an independent cybersecurity research and engineering portfolio project. It investigates custom Windows threat-detection rules through an isolated laboratory, actual event collection, controlled Wazuh tests, and reproducible offline analysis.
 
-1. Failed authentication
-2. Suspicious PowerShell execution
-3. Local Administrators-group membership changes
+> **Evidence boundary:** The failed-authentication custom rule was confirmed during live Windows-to-Wazuh ingestion. The PowerShell rule was verified in an isolated rule-engine test, and a qualifying live Administrators-group detection was not confirmed. This is not an evaluation of production detection accuracy.
 
-The project combines real Windows telemetry, Wazuh rule
-development, controlled experiments, and Python analysis.
+## Research question
 
-## Laboratory
+What evidence can a resource-constrained Windows laboratory provide about custom SIEM detection rules, and how should live alerts, simulated rule-engine tests, and small-scale offline classification results be distinguished?
 
-- Windows 10 host
-- Oracle VirtualBox
-- Ubuntu Server 24.04
-- Wazuh Manager 4.14.10
-- Windows Server 2019
-- Wazuh Windows agent 4.14.10
-- Sysmon 15.22
-- Python
+## Detection validation
 
-## Validated results
+| Scenario | Windows event | Custom rule | Supported result |
+| --- | --- | --- | --- |
+| Failed authentication | Security 4625 | `100101` | **Verified live** |
+| Encoded PowerShell execution | Sysmon 1 | `100102` | Simulated Sysmon JSON matched in `wazuh-logtest`; real process captured by Sysmon; **live custom alert not confirmed** |
+| Local Administrators-group addition | Security 4732 | `100103` | Offline rule investigation; **qualifying live alert not confirmed** |
 
-| Scenario | Custom rule | Result |
-|---|---|---|
-| Failed authentication | 100101 | Verified live |
-| Suspicious PowerShell | 100102 | Rule-engine verified; live alert not observed |
-| Administrators-group addition | 100103 | Live alert not verified |
+The built-in failed-authentication rule `60122` (level 5) and custom rule `100101` (level 9) were observed on **separate** controlled login attempts. The custom rule changes classification and alert severity. This does not establish increased detection sensitivity or fewer false positives.
 
-Built-in Wazuh rule 60122 and custom rule 100101 were
-observed on separate controlled failed-login attempts.
+[Methodology](reports/methodology.md) · [Validation table](reports/detection_validation_status.csv) · [Live detection evidence](reports/live_detection_results.md)
 
-Custom rule 100102 successfully matched a simulated
-Sysmon JSON event. A real encoded PowerShell execution
-was captured by Sysmon, but no corresponding live custom
-Wazuh alert was observed.
+## Laboratory architecture
 
-Existing real Event ID 4732 records concerned Users and
-IIS_IUSRS rather than local Administrators membership.
+```text
+Windows 10 / VirtualBox
+  |
+  +-- Windows Server 2019
+  |      +-- Sysmon 15.22 (process events)
+  |      +-- Windows Security EventChannel
+  |      +-- Wazuh agent 4.14.10
+  |                  |
+  +-- Ubuntu Server 24.04 / Wazuh manager 4.14.10
+                     |
+             Alerts and event exports
+                     |
+            Python research workflow
+                     |
+            Research reports + results
+```
 
-## Python evaluation
+The original experiments used authorized, isolated virtual machines. The offline Python evaluation can be reproduced **without** running the VMs.
 
-Six controlled PowerShell pattern examples produced:
+## Recorded evidence
 
-- 3 true positives
-- 3 true negatives
-- 0 false positives
-- 0 false negatives
+| Evidence item | Count |
+| --- | ---: |
+| Exported Sysmon process-creation events | 415 |
+| Identified PowerShell events | 19 |
+| Security events in JSONL replay | 4 |
+| Failed-login events in replay | 1 |
+| Group-membership events in replay | 3 |
+| Administrators-group additions in replay | 0 |
 
-These results describe deliberately constructed test
-cases, not production detection performance.
+Six **deliberately constructed** PowerShell classification examples yielded TP=3, TN=3, FP=0, FN=0. Their 100% result applies **only to these six examples** and is not a field accuracy estimate.
 
-## Repository contents
+![Confusion matrix for six controlled examples](reports/controlled_confusion_matrix.svg)
 
-- configurations/ : Saved detection rules
-- scripts/ : Python analysis and reporting scripts
-- datasets/ : Controlled test and exported evidence
-- reports/ : Results, methodology, and MITRE mappings
-- screenshots/ : Selected experimental evidence
+[Consolidated findings](reports/consolidated_research_results.md) · [MITRE ATT&CK mapping](reports/mitre_attack_mapping.csv) · [Controlled test cases](datasets/powershell_controlled_tests.csv)
 
-## Research interpretation
+## Repository structure
 
-This project demonstrates a functioning Windows-to-Wazuh
-pipeline and live custom failed-authentication detection.
+| Path | Contents |
+| --- | --- |
+| [`configurations/`](configurations/) | Custom Wazuh rule definitions |
+| [`scripts/`](scripts/) | Python evaluation and report generation |
+| [`datasets/`](datasets/) | Controlled tests and selected Windows evidence |
+| [`reports/`](reports/) | Experimental results, methodology and limitations |
+| [`screenshots/`](screenshots/) | 13 selected evidence images |
+| [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) | Offline reproduction instructions |
 
-The PowerShell and Administrators-group experiments have
-documented limitations. No production accuracy claims
-are made.
+## Reproduce the analysis
 
-## Documentation
+Python 3.10+ is required. The scripts use no third-party packages. Run from the repository's top-level directory:
 
-- reports/methodology.md
-- reports/final_detection_summary.md
-- reports/consolidated_research_results.md
-- reports/mitre_attack_mapping.csv
-- reports/detection_validation_status.csv
+```text
+python scripts/evaluate.py
+python scripts/build_research_report.py
+python scripts/finalize_research.py
+```
 
-## Ethical scope
+These commands reproduce specific **offline** reports from the datasets; they do not repeat live Wazuh tests. See [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 
-All experiments were conducted in an isolated,
-authorized laboratory. No third-party systems were
-targeted.
+## Evidence highlights
+
+- [Windows Wazuh agent connected](screenshots/08-windows-server-wazuh-agent-connected.PNG)
+- [Built-in failed-login alert](screenshots/09-wazuh-baseline-failed-login.PNG)
+- [Custom failed-login rule evidence](screenshots/07-wazuh-failed-login-rule-100101.PNG)
+- [PowerShell rule-engine evidence](screenshots/05-wazuh-powershell-custom-rule-100102.PNG)
+- [Python evaluation output](screenshots/11-python-evaluation-results.PNG)
+
+## Limitations and future research
+
+- **One of three** custom detection scenarios has a confirmed live alert.
+- A genuine encoded PowerShell execution appeared in Sysmon, but a corresponding live custom Wazuh alert was not observed.
+- Examined Event ID 4732 records concern `Users` and `IIS_IUSRS`, not `Administrators`.
+- The deliberately constructed six-example classifier test is insufficient for estimating production accuracy.
+- Built-in and custom authentication alerts came from separate login attempts, so a controlled same-event comparison is outstanding.
+- Proposed extensions include native live validation of remaining rules, independent ground truth, matched baseline testing, repeated measurements and detection-latency analysis.
+
+**Ethical scope:** All reported experiments took place in an isolated, authorized laboratory. The repository is a research prototype and does not include VM images or a live SOC deployment.

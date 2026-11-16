@@ -1,59 +1,62 @@
 # SentinelSOC — Consolidated Research Results
 
-## 1. Real Windows evidence inventory
+## Real evidence inventory
 
-- sysmon_process_creation_events: 415
-- powershell_process_events: 19
-- security_replay_events: 4
-- failed_login_events: 1
-- group_membership_events: 3
-- administrators_group_additions: 0
+| Evidence item | Count |
+| --- | ---: |
+| Sysmon process-creation events | 415 |
+| Identified PowerShell events | 19 |
+| Windows Security replay events | 4 |
+| Failed-authentication replay records | 1 |
+| Group-membership replay records | 3 |
+| Administrators-group additions in replay | 0 |
 
-These counts describe the previously collected evidence.
-They are not measurements of detection accuracy.
+These are descriptive evidence counts, **not** detection performance estimates.
 
-## 2. Controlled synthetic evaluation
+## Six-case controlled pattern evaluation
 
-- Test cases: 6
-- True positives: 3
-- True negatives: 3
-- False positives: 0
-- False negatives: 0
-- Precision: 1.00
-- Recall: 1.00
-- F1 score: 1.00
+| Metric | Value |
+| --- | ---: |
+| Deliberately constructed examples | 6 |
+| True positives | 3 |
+| True negatives | 3 |
+| False positives | 0 |
+| False negatives | 0 |
+| Precision, recall and F1 on these cases | 1.00 each |
 
-These six deliberately constructed cases do not establish
-real-world detection accuracy.
+This test is too small and deliberately constructed to represent real-world detection accuracy.
 
-## 3. Verified live detection
+![Controlled confusion matrix](controlled_confusion_matrix.svg)
 
-| Configuration | Rule | Level | Event | Result |
-|---|---|---|---|---|
-| Built-in baseline | 60122 | 5 | 4625 | Detected live |
-| SentinelSOC custom | 100101 | 9 | 4625 | Detected live |
+## Verified live failed authentication
 
-The live tests used Windows Server 2019, agent 002.
-The baseline and custom results came from separate
-controlled authentication events.
+| Configuration | Rule | Level | Windows event | Result |
+| --- | --- | ---: | --- | --- |
+| Built-in baseline | `60122` | 5 | Security 4625 | Live alert observed |
+| SentinelSOC custom | `100101` | 9 | Security 4625 | Live alert observed |
 
-Custom rule 100101 is a child of built-in rule 60122.
-The custom rule increases alert severity and classification;
-it is not evidence of improved detection sensitivity.
+The two alerts came from **separate controlled failed-login attempts**. Custom rule `100101` is a child of `60122`; it adds classification and severity, but the experiments do not demonstrate increased detection sensitivity.
 
-## 4. Limitations and remaining validation
+[Live detection details](live_detection_results.md) · [Baseline image](../screenshots/09-wazuh-baseline-failed-login.PNG) · [Custom rule image](../screenshots/07-wazuh-failed-login-rule-100101.PNG)
 
-- The live failed-login scenario is verified.
-- Live PowerShell custom detection remains unverified.
-- Live Administrators-group detection remains unverified.
-- Independent detection-rate evaluation is outstanding.
-- Earlier isolated JSON replay results are not equivalent
-  to results from native live EventChannel ingestion.
+## Offline versus live verification
 
-## 5. Evidence
+| Scenario | Offline evidence | Live evidence |
+| --- | --- | --- |
+| Failed authentication (`100101`) | Earlier replay observation | **Verified** custom live alert |
+| Encoded PowerShell (`100102`) | Simulated Sysmon JSON matched rule in `wazuh-logtest` | Real process observed in Sysmon; custom Wazuh live alert **unverified** |
+| Administrators-group addition (`100103`) | Available Event ID 4732 evidence and rule test | No qualifying Administrators addition; custom live alert **unverified** |
 
-- screenshots/08-windows-server-wazuh-agent-connected.png
-- screenshots/09-live-windows-failed-login-alert.png
-- screenshots/10-custom-windows-failed-login-rule.png
-- reports/live_detection_results.md
+The observed group records concern `Users` and `IIS_IUSRS`, not Administrators.
 
+## Research limitations
+
+- Six constructed classifier examples are not an independent real-world sample.
+- Live baseline and custom alerts were not evaluated under matched event-stream conditions.
+- Live PowerShell and Administrators-group custom detections were not confirmed.
+- Simplified JSON replay and native Windows agent ingestion are not equivalent.
+- No statistically meaningful accuracy, false-positive or latency comparison has been performed.
+
+## Supporting documentation
+
+[Methodology](methodology.md) · [Validation status](detection_validation_status.csv) · [Reproducibility](../REPRODUCIBILITY.md) · [Screenshots](../screenshots/)

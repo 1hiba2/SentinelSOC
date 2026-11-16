@@ -1,51 +1,36 @@
-# SentinelSOC â€” Preliminary Research Results
+# SentinelSOC — Preliminary Offline Research Results
 
-## Real evidence inventory
+> **Historical experiment note:** This report documents an earlier isolated JSON replay and the six-case pattern study. Later **live** Windows-to-Wazuh failed-login observations are documented separately in [live_detection_results.md](live_detection_results.md). These evidence types should not be combined into one performance claim.
 
-- Sysmon process-creation events: 415
-- Identified PowerShell events: 19
-- Windows Security replay events: 4
-- Failed-login events: 1
-- Group membership events: 3
-- Administrators-group additions: 0
+## Evidence inventory
 
-## Controlled pattern evaluation
+- Sysmon process creation: **415** events
+- Identified PowerShell processes: **19**
+- Windows Security JSONL replay: **4** events
+- Failed-login events: **1**
+- Group-membership events: **3**
+- Administrators-group additions: **0**
 
-- Cases: 6
-- TP: 3; TN: 3; FP: 0; FN: 0
-- Precision: 1.0
-- Recall: 1.0
-- F1-score: 1.0
+## Controlled PowerShell pattern examples
 
-These six examples were deliberately constructed to test
-the selected regular-expression indicators. Results are
-not independent estimates of real-world detection accuracy.
+Six deliberately constructed examples: TP=3, TN=3, FP=0, FN=0. Precision, recall and F1 within this small set are 1.0. This is not a production accuracy estimate.
 
-## Isolated Wazuh JSON replay comparison
+## Earlier isolated Wazuh JSON testing
 
-| Scenario | Built-in-only outcome | With SentinelSOC |
-|---|---|---|
-| Failed authentication (4625) | 1002 | 100101 |
-| Encoded PowerShell | No Phase 3 alert | 100102 |
-| Administrators group addition | No Phase 3 alert | 100103 |
+| Scenario | Earlier baseline-only observation | Custom observation |
+| --- | --- | --- |
+| Failed authentication | Rule `1002` in earlier isolated comparison | Rule `100101`, earlier level 7 configuration |
+| Encoded PowerShell | No earlier isolated alert observed | Rule `100102`, level 8 |
+| Administrators-group addition | No earlier isolated alert observed | Rule `100103`, level 10 |
 
-The comparison uses simplified synthetic JSON messages.
-Built-in Windows and Sysmon rules can require native event
-metadata, parent-rule matches, and different fields.
-A missing Phase 3 alert in this experiment does not
-demonstrate failure on real Windows telemetry.
+These simplified messages were used in preliminary rule-engine testing. A missing isolated alert does **not** establish failure under native live Windows telemetry. The earlier rule levels are historical results, not the final live authentication observation (**rule `100101`, level 9**).
 
-## Real Windows Security replay
+## Historical Security-event replay
 
-- Record 1312 (4625): custom rule 100101, level 7.
-- Records 34, 94, 95 (4732): no custom 100103 alert observed.
-- Record 34 did not decode successfully during batch replay,
-  so it is not counted as a validated negative detection.
-- The replay was derived from EVTX evidence, not received live.
+- Failed authentication Event ID 4625, record 1312: custom rule `100101`, earlier level 7 replay observation.
+- Event ID 4732, records 34, 94 and 95: no qualifying Administrators-group detection.
+- Record 34 was not successfully decoded in batch replay and should not count as a validated negative.
 
-## Outstanding validation
+**Subsequent live validation:** Built-in `60122` (level 5) and custom `100101` (level 9) were observed on separate genuine failed-login attempts.
 
-- Live Windows Server 2019 agent enrollment and ingestion.
-- Native-format event testing and baseline comparison.
-- Additional independently labeled positives and negatives.
-- Realistic detection-rate and false-positive evaluation.
+See [consolidated results](consolidated_research_results.md) and [methodology](methodology.md).
